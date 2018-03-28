@@ -17,8 +17,21 @@ namespace Application.Tests
             _equation = equation;
         }
 
-        [When("I request the result of the operation in the (.*) browser")]
-        public void ProcessCalculation(string browser)
+        [When("I request the result of the operation")]
+        public void ProcessCalculation()
+        {
+            FlowExecution(Browser.Chrome.ToString());
+            FlowExecution(Browser.Edge.ToString());
+            FlowExecution(Browser.InternetExplorer.ToString());
+        }
+
+        [Then("the result will be (.*)")]
+        public void CheckResult(decimal result)
+        {
+            Assert.AreEqual(result, _result);
+        }
+
+        private void FlowExecution (string browser)
         {
             var page = new FeatureNamePage((Browser)Enum.Parse(typeof(Browser), browser));
             page.LoadPage();
@@ -26,12 +39,6 @@ namespace Application.Tests
             page.ProcessCalculation();
             _result = page.GetResult();
             page.Close();
-        }
-
-        [Then("the result will be (.*)")]
-        public void CheckResult(decimal result)
-        {
-            Assert.AreEqual(result, _result);
         }
     }
 }
